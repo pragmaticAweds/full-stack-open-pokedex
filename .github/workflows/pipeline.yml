@@ -8,6 +8,7 @@ on:
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
+    concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
