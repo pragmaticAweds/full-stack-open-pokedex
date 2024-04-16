@@ -1,0 +1,28 @@
+# fly.toml app configuration file generated for fs-open-pokedex on 2024-04-16T11:00:23+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'fs-open-pokedex'
+primary_region = 'lhr'
+
+[env]
+  PORT = "3000"
+
+[processes]
+  app = "node app.js" # add this
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
