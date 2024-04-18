@@ -76,6 +76,6 @@ jobs:
           DEFAULT_BUMP: "patch"
           DRY_RUN: true
           WITH_V: true
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
 
-      - run: echo "$GITHUB_CONTEXT"
+      - run: echo "$COMMIT_MESSAGES"
