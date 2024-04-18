@@ -41,15 +41,15 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: "patch"
-          DRY_RUN: true
-          WITH_V: true
-      - run: |
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+      # - name: Bump version and push tag
+      #   uses: anothrNick/github-tag-action@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     DEFAULT_BUMP: "patch"
+      #     DRY_RUN: true
+      #     WITH_V: true
+      # - run: |
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
 
       # - name: Deploy App
       #   if: ${{ github.event_name == 'push' }}
@@ -57,17 +57,18 @@ jobs:
       #   env:
       #     FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-  # tag_release:
-  #   needs: [simple_deployment_pipeline]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Bump version and push tag
-  #       uses: anothrNick/github-tag-action@v1
-  #       if: ${{ github.event_name == 'push' }}
-  # env:
-  #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #   # DEFAULT_BUMP: "patch"
-  #   # DRY_RUN: true
-  #   # WITH_V: true
-  #       # run: |
-  #       #   GITHUB_CONTEXT: ${{ toJson(github) }}
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: "patch"
+          DRY_RUN: true
+          WITH_V: true
+          # run: |
+          #   GITHUB_CONTEXT: ${{ toJson(github) }}
+
+          # if: ${{ github.event_name == 'push' }}
