@@ -38,7 +38,9 @@ jobs:
         run: npx playwright test
 
       - name: Trigger deployment
-        if: ${{ github.event_name == 'push' }}
+
+        if: ${{ contains(toJson(github.event.commits.*.message), '#skip') != true && github.event_name == 'push' }}
+
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       # - name: Bump version and push tag
@@ -66,7 +68,7 @@ jobs:
         with:
           node-version: "20"
 
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ contains(toJson(github.event.commits.*.message), '#skip') != true && github.event_name == 'push' }}
 
       - uses: anothrNick/github-tag-action@v1
         name: Bump version and push tag
@@ -76,6 +78,6 @@ jobs:
           DEFAULT_BUMP: "patch"
           DRY_RUN: true
           WITH_V: true
-          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+          COMMIT_MESSAGES: ${{ contains(toJson(github.event.commits.*.message), '#skip') }}
 
       - run: echo "$COMMIT_MESSAGES"
