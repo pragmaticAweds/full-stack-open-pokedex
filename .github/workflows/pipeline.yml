@@ -79,5 +79,3 @@ jobs:
           DRY_RUN: true
           WITH_V: true
           COMMIT_MESSAGES: ${{ contains(toJson(github.event.commits.*.message), '#skip') }}
-
-      - run: echo "$COMMIT_MESSAGES"
