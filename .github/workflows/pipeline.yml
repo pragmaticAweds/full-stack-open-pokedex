@@ -43,6 +43,13 @@ jobs:
 
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: "patch"
+          DRY_RUN: true
+          WITH_V: true
+      - run: |
+          GITHUB_CONTEXT: ${{ toJson(github) }}
 
       # - name: Deploy App
       #   if: ${{ github.event_name == 'push' }}
@@ -57,10 +64,10 @@ jobs:
   #     - name: Bump version and push tag
   #       uses: anothrNick/github-tag-action@v1
   #       if: ${{ github.event_name == 'push' }}
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         # DEFAULT_BUMP: "patch"
-  #         # DRY_RUN: true
-  #         # WITH_V: true
+  # env:
+  #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   # DEFAULT_BUMP: "patch"
+  #   # DRY_RUN: true
+  #   # WITH_V: true
   #       # run: |
   #       #   GITHUB_CONTEXT: ${{ toJson(github) }}
