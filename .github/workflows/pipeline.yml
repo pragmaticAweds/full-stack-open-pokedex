@@ -37,11 +37,30 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
+      - name: testing github context
+        run: echo ${{ github.event }}
+
       - name: Trigger deployment
 
         if: ${{ contains(toJson(github.event.commits.*.message), '#skip') != true && github.event_name == 'push' }}
 
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
+      - name: Deployment Success Notification
+        uses: rjstone/discord-webhook-notify@v1
+        if: success()
+        with:
+          severity: info
+          details: Test Succeeded!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Deployment Failure Notification
+        uses: rjstone/discord-webhook-notify@v1
+        if: failure()
+        with:
+          severity: error
+          details: Test Failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
       # - name: Bump version and push tag
       #   uses: anothrNick/github-tag-action@v1
