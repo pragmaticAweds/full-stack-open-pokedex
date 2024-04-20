@@ -38,39 +38,36 @@ jobs:
         run: npx playwright test
 
       - name: testing github context
-        run: echo ${{ github.event }}
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+        run: echo "$GITHUB_CONTEXT"
 
       - name: Trigger deployment
 
-        if: ${{ contains(toJson(github.event.commits.*.message), '#skip') != true && github.event_name == 'push' }}
+        if: ${{ !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
 
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deployment Success Notification
         uses: rjstone/discord-webhook-notify@v1
-        if: success()
+        if: ${{ success() && !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
         with:
           severity: info
+          text: A new version of Pokedex deployed
           details: Test Succeeded!
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Deployment Failure Notification
         uses: rjstone/discord-webhook-notify@v1
-        if: failure()
+
+        if: ${{ failure() && !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
+
         with:
           severity: error
-          details: Test Failed!
+          text: Build failed
+          details: commit ${{ github.event.push.head }} by pragmatic_aweds
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-
-      # - name: Bump version and push tag
-      #   uses: anothrNick/github-tag-action@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     DEFAULT_BUMP: "patch"
-      #     DRY_RUN: true
-      #     WITH_V: true
-      # - run: |
-      #     GITHUB_CONTEXT: ${{ toJson(github) }}
 
       # - name: Deploy App
       #   if: ${{ github.event_name == 'push' }}
@@ -87,7 +84,7 @@ jobs:
         with:
           node-version: "20"
 
-        if: ${{ contains(toJson(github.event.commits.*.message), '#skip') != true && github.event_name == 'push' }}
+        if: ${{ !contains(toJson(github.event.commits.*.message), '#skip') && github.event_name == 'push' }}
 
       - uses: anothrNick/github-tag-action@v1
         name: Bump version and push tag
@@ -96,4 +93,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: "patch"
           DRY_RUN: true
-          COMMIT_MESSAGES: ${{ contains(toJson(github.event.commits.*.message), '#skip') }}
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
