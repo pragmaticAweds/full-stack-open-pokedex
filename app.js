@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require("express");
 const app = express();
 
@@ -9,8 +10,8 @@ app.get("/version", (req, res) => {
 
 app.get("/health", (req, res) => {
   // eslint-disable-next-line no-constant-condition
-  // if (true) throw "error...  ";
-  res.send("ping");
+  if (true) throw "error...  ";
+  // res.send("ping");
 });
 
 // eslint-disable-next-line no-undef
