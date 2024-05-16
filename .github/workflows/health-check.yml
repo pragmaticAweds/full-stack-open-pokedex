@@ -2,7 +2,7 @@ name: Schedule Health Check pipeline
 
 on:
   schedule:
-    - cron: "* 1 * * *" # Schedule to run at 1 hour
+    - cron: "0 0 * * *" # Schedule to run every 24 hour
 
   push:
     branches:
